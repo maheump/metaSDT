@@ -1,24 +1,8 @@
 # INDIVIDUAL SIGNAL DETECTION ANALYSIS FOR TYPE II DATA (Maxime Maheu)
 
-# Only requires an "input_data" data.frame with answers labels in the first column and confidence ratings in the second one; and confidence borns !
-# It can also take into account design (detecion or choice), ponderation type, and homogeneity analysis
-
-# SDT classifications (i.e. answers labels):
-  # 1: Hit
-  # 2: False alarm
-  # 3: Miss
-  # 4: Correct rejection
-
-# Usefull references to undestand what is going on here :
-  # Fleming, S. M., Weil, R. S., Nagy, Z., Dolan, R. J., & Rees, G. (2010). Relating introspective accuracy to individual differences in brain structure. Science, 329(5998), 1541–1543.
-  # Kornbrot, D. E. (2006). Signal detection theory, the approach of choice: Model-based and distribution-free measures and evaluation. Perception & Psychophysics, 68(3), 393–414.
-  # Macmillan, N. A., & Creelman, C. D. (2004). Detection theory: A user's guide. Psychology press.
-  # Maniscalco, B., & Lau, H. (2012). A signal detection theoretic approach for estimating metacognitive sensitivity from confidence ratings. Consciousness and Cognition, 21(1), 422–430.
-  # Szczepanowski, R., & Pessoa, L. (2007). Fear perception: Can objective and subjective awareness measures be dissociated? Journal of Vision, 7(4), 1–17.
-
 MM_metaSDT <- function(input_data, min_conf, max_conf, design = 2, coefficient = 1) {
 
-  # Print 
+  # Print title
   cat("\nType I and type II signal detection analysis\n")
   cat("Copyright Maxime Maheu (2014)\n\n")
   
@@ -147,9 +131,9 @@ MM_metaSDT <- function(input_data, min_conf, max_conf, design = 2, coefficient =
       if (coefficient == 1) {
         Aroc <- (1 / 2) + ((1 / 4) * ka) + ((1 / 4) * kb)
         Bk <- log(((1/4) * ka) / ((1/4) * kb))}
-      if (coefficient == 2) { # À MODIFIER !!!!!!
-        Aroc <- (1/2) + ((51/(2*101))*ka) + ((52/(2*101+1))*kb)
-        Bk <- log(((51/(2*101)) * ka) / ((51/(2*101)) * kb))}
+      if (coefficient == 2) {
+        Aroc <- (1 / 2) * ((med_conf / (2 * length(seq(min_conf, max_conf)))) * ka) * (((med_conf + 1) / (2 * length(seq(min_conf, max_conf)))) * kb)
+        Bk <- log(((med_conf / (2 * length(seq(min_conf, max_conf)))) * ka) / (((med_conf + 1) / (2 * length(seq(min_conf, max_conf)))) * kb))
       
       # Save splitted Aroc values
       if (procedure == 1) {first_half <- Aroc}
@@ -158,8 +142,8 @@ MM_metaSDT <- function(input_data, min_conf, max_conf, design = 2, coefficient =
   # Display the results tables
   big_d_prime <- meta_d_prime / d_prime
   error <- first_half - second_half
-  summary_table <- matrix(c(ntrials, mean_conf, d_prime, c, meta_d_prime, big_d_prime, Bk, Aroc, error, fit_typeI_poly$coefficients[2], fit_typeI_poly$coefficients[1], fit_typeI_cor[4], fit_typeI_cor[3], fit_typeII_poly$coefficients[2], fit_typeII_poly$coefficients[1], fit_typeII_cor[4], fit_typeII_cor[3]), nrow = 1, ncol = 17)
-  colnames(summary_table) <- c("N", "Mean conf.", "d'", "c", "meta-d'", "D'", "Bk", "Aroc", "Error", "T1 beta1", "T1 beta2", "T1 cor", "T1 p", "T2 beta1", "T2 beta2", "T2 cor", "T2 p")
+  summary_table <- matrix(c(ntrials, mean_conf, d_prime, c, meta_d_prime, big_d_prime, Bk, Aroc, error, fit_typeI_poly$coefficients[2], fit_typeI_poly$coefficients[1], (fit_typeI_cor[4]^2), fit_typeI_cor[3], fit_typeII_poly$coefficients[2], fit_typeII_poly$coefficients[1], (fit_typeII_cor[4]^2), fit_typeII_cor[3]), nrow = 1, ncol = 17)
+  colnames(summary_table) <- c("N", "Mean conf.", "d'", "c", "meta-d'", "D'", "Bk", "Aroc", "Error", "T1 beta0", "T1 beta1", "T1 r2", "T1 p", "T2 beta0", "T2 beta1", "T2 r2", "T2 p")
   rownames(summary_table) <- ""
   
   # Create the graph window
