@@ -3,14 +3,14 @@ metaSDT
 
 DESCRIPTION
 
-metaSDT is a R function analysing, with signal detection theory, your type II data. It works with confidence ratings (any type of scale with 1 step betwwen two grades) and control levels (such as information seeking level or amount of exploration).
+metaSDT is a R function analyzing, with signal detection theory, your type II data. It works with confidence ratings (any type of scale with 1 step between two grades) and control levels (such as information seeking level or amount of exploration).
 
 INPUTS
 
 It only requires:
     - an "input_data" data.frame with answers labels in the first column and confidence ratings in the second one,
     - and confidence borns.
-It can also take into account design (detecion or choice), ponderation type, and homogeneity analysis, which are specified by default.
+It can also take into account design (detection or choice), ponderation type, and homogeneity analysis, which are specified by default.
 
 Answers have to be classified (answers labels) following classical SDT categories:
     1: Hit,
@@ -24,7 +24,7 @@ UTILIZATION
 2) Set the working directory to the right place
 3) Load the function
 4) Load the example data
-5) Lauch the function
+5) Launch the function
 
 REFERENCES
 
