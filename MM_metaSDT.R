@@ -30,7 +30,7 @@ MM_metaSDT <- function(input_data, min_conf, max_conf, design = 2, coefficient =
   
   # Display some warnings
   ntrials <- nrow(input_data)
-  mean_conf <- sum(example_data[2]) / ntrials
+  mean_conf <- sum(input_data[2]) / ntrials
   if (ntrials < 100) {
     cat("Warning! The SDT analysis will only be made on less than 100 trials which can led to poor estimation of subject's actual metacognitive accuracy and, in some cases, to completely wrong computations.\n")}
   
