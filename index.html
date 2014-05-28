@@ -1,76 +1,110 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
   <head>
-    <meta charset='utf-8'>
+    <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <link href='https://fonts.googleapis.com/css?family=Chivo:900' rel='stylesheet' type='text/css'>
-    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen" />
-    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen" />
-    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print" />
+    <title>metaSDT by maximemaheu</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
     <!--[if lt IE 9]>
     <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
-    <title>metaSDT by maximemaheu</title>
   </head>
-
   <body>
-    <div id="container">
-      <div class="inner">
+    <div class="wrapper">
+      <header>
+        <h1>metaSDT</h1>
+        <p>Individual signal detection analysis for type II data</p>
 
-        <header>
-          <h1>metaSDT</h1>
-          <h2>Individual signal detection analysis for type II data</h2>
-        </header>
+        <p class="view"><a href="https://github.com/maximemaheu/metaSDT">View the Project on GitHub <small>maximemaheu/metaSDT</small></a></p>
 
-        <section id="downloads" class="clearfix">
-          <a href="https://github.com/maximemaheu/metaSDT/zipball/master" id="download-zip" class="button"><span>Download .zip</span></a>
-          <a href="https://github.com/maximemaheu/metaSDT/tarball/master" id="download-tar-gz" class="button"><span>Download .tar.gz</span></a>
-          <a href="https://github.com/maximemaheu/metaSDT" id="view-on-github" class="button"><span>View on GitHub</span></a>
-        </section>
 
-        <hr>
+        <ul>
+          <li><a href="https://github.com/maximemaheu/metaSDT/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/maximemaheu/metaSDT/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/maximemaheu/metaSDT">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <h3>
+<a name="description" class="anchor" href="#description"><span class="octicon octicon-link"></span></a>Description.</h3>
 
-        <section id="main_content">
-          <h3>
-<a name="welcome-to-github-pages" class="anchor" href="#welcome-to-github-pages"><span class="octicon octicon-link"></span></a>Welcome to GitHub Pages.</h3>
+<p>metaSDT is a R function analyzing, with signal detection theory, your type II data. It works with confidence ratings (any type of scale with 1 step between two grades) and control levels (such as information seeking level or amount of exploration).</p>
 
-<p>This automatic page generator is the easiest way to create beautiful pages for all of your projects. Author your page content here using GitHub Flavored Markdown, select a template crafted by a designer, and publish. After your page is generated, you can check out the new branch:</p>
+<h3>
+<a name="input" class="anchor" href="#input"><span class="octicon octicon-link"></span></a>Input.</h3>
 
-<pre><code>$ cd your_repo_root/repo_name
-$ git fetch origin
-$ git checkout gh-pages
+<p>It only requires:</p>
+
+<ul>
+<li>an "input_data" data.frame with answers labels in the first column and confidence ratings in the second one,</li>
+<li>and confidence borns.
+It can also take into account design (detection or choice), ponderation type, and homogeneity analysis, which are specified by default.</li>
+</ul><h3>
+<a name="answers-labels" class="anchor" href="#answers-labels"><span class="octicon octicon-link"></span></a>Answers labels.</h3>
+
+<p>Answers have to be classified (answers labels) following classical SDT categories:</p>
+
+<ul>
+<li>1: Hit,</li>
+<li>2: False alarm,</li>
+<li>3: Miss,</li>
+<li>4: Correct rejection.</li>
+</ul><h3>
+<a name="utilization" class="anchor" href="#utilization"><span class="octicon octicon-link"></span></a>Utilization.</h3>
+
+<ol>
+<li>Open R.</li>
+<li>Set the working directory to the right place.</li>
+</ol><pre><code>setwd("~/Documents/R/metaSDT")
 </code></pre>
 
-<p>If you're using the GitHub for Mac, simply sync your repository and you'll see the new branch.</p>
+<ol>
+<li>Load the function.</li>
+</ol><pre><code>source("MM_metaSDT.r")
+</code></pre>
+
+<ol>
+<li>Load the example data.</li>
+</ol><pre><code>data &lt;- read.csv("example_data.csv", header = TRUE, sep = ";")
+</code></pre>
+
+<ol>
+<li>Launch the function.</li>
+</ol><pre><code>MM_metaSDT(data, 1, 6)
+</code></pre>
 
 <h3>
-<a name="designer-templates" class="anchor" href="#designer-templates"><span class="octicon octicon-link"></span></a>Designer Templates</h3>
+<a name="references" class="anchor" href="#references"><span class="octicon octicon-link"></span></a>References.</h3>
 
-<p>We've crafted some handsome templates for you to use. Go ahead and continue to layouts to browse through them. You can easily go back to edit your page before publishing. After publishing your page, you can revisit the page generator and switch to another theme. Your Page content will be preserved if it remained markdown format.</p>
+<p>Here are some usefull references to undestand what is going on here :</p>
 
-<h3>
-<a name="rather-drive-stick" class="anchor" href="#rather-drive-stick"><span class="octicon octicon-link"></span></a>Rather Drive Stick?</h3>
-
-<p>If you prefer to not use the automatic generator, push a branch named <code>gh-pages</code> to your repository to create a page manually. In addition to supporting regular HTML content, GitHub Pages support Jekyll, a simple, blog aware static site generator written by our own Tom Preston-Werner. Jekyll makes it easy to create site-wide headers and footers without having to copy them across every page. It also offers intelligent blog support and other advanced templating features.</p>
-
-<h3>
-<a name="authors-and-contributors" class="anchor" href="#authors-and-contributors"><span class="octicon octicon-link"></span></a>Authors and Contributors</h3>
-
-<p>You can <a href="https://github.com/blog/821" class="user-mention">@mention</a> a GitHub username to generate a link to their profile. The resulting <code>&lt;a&gt;</code> element will link to the contributor's GitHub Profile. For example: In 2007, Chris Wanstrath (<a href="https://github.com/defunkt" class="user-mention">@defunkt</a>), PJ Hyett (<a href="https://github.com/pjhyett" class="user-mention">@pjhyett</a>), and Tom Preston-Werner (<a href="https://github.com/mojombo" class="user-mention">@mojombo</a>) founded GitHub.</p>
-
-<h3>
-<a name="support-or-contact" class="anchor" href="#support-or-contact"><span class="octicon octicon-link"></span></a>Support or Contact</h3>
-
-<p>Having trouble with Pages? Check out the documentation at <a href="http://help.github.com/pages">http://help.github.com/pages</a> or contact <a href="mailto:support@github.com">support@github.com</a> and we’ll help you sort it out.</p>
-        </section>
-
-        <footer>
-          metaSDT is maintained by <a href="https://github.com/maximemaheu">maximemaheu</a><br>
-          This page was generated by <a href="http://pages.github.com">GitHub Pages</a>. Tactile theme by <a href="https://twitter.com/jasonlong">Jason Long</a>.
-        </footer>
-
-        
-      </div>
+<ul>
+<li>Fleming, S. M., Weil, R. S., Nagy, Z., Dolan, R. J., &amp; Rees, G. (2010). Relating introspective accuracy to individual differences in brain structure. Science, 329(5998), 1541–1543.</li>
+<li>Kornbrot, D. E. (2006). Signal detection theory, the approach of choice: Model-based and distribution-free measures and evaluation. Perception &amp; Psychophysics, 68(3), 393–414.</li>
+<li>Macmillan, N. A., &amp; Creelman, C. D. (2004). Detection theory: A user's guide. Psychology press.</li>
+<li>Maniscalco, B., &amp; Lau, H. (2012). A signal detection theoretic approach for estimating metacognitive sensitivity from confidence ratings. Consciousness and Cognition, 21(1), 422–430.</li>
+<li>Szczepanowski, R., &amp; Pessoa, L. (2007). Fear perception: Can objective and subjective awareness measures be dissociated? Journal of Vision, 7(4), 1–17.</li>
+</ul>
+      </section>
+      <footer>
+        <p>This project is maintained by <a href="https://github.com/maximemaheu">maximemaheu</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
     </div>
+    <script src="javascripts/scale.fix.js"></script>
+              <script type="text/javascript">
+            var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+            document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+          </script>
+          <script type="text/javascript">
+            try {
+              var pageTracker = _gat._getTracker("metacognition;signal detection theory;SDT;Aroc;ROC;receiver operating characteristic.");
+            pageTracker._trackPageview();
+            } catch(err) {}
+          </script>
+
   </body>
 </html>
