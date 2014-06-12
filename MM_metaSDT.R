@@ -1,23 +1,66 @@
-# INDIVIDUAL SIGNAL DETECTION ANALYSIS FOR TYPE II DATA (Maxime Maheu)
+# INDIVIDUAL SIGNAL DETECTION ANALYSIS FOR TYPE II DATA.
+# Maxime Maheu, 2014.
+
+# setwd("~/Documents/R/metaSDT")
+# source("MM_metaSDT.r")
+# example_data <- read.csv("example_data.csv", header = TRUE, sep = ";")
+# results <- MM_metaSDT(example_data, 1, 6)
+# results
 
 MM_metaSDT <- function(input_data, min_conf, max_conf, design = 2, coefficient = 1) {
 
   # Print title
   cat("\nType I and type II signal detection analysis\n")
-  cat("Copyright Maxime Maheu (2014)\n\n")
+  cat("Copyright Maxime Maheu (2014)\n")
+  
+  # SUPPRIMER LES input_data$* ET LES REMPLACER PAR LE NUMÉRO DE LA COLONNE CORRESPONDANTE
   
   # Check if the data input is a data frame
   if (is.data.frame(input_data) == FALSE) {cat("Warning! The input table is not a data frame. Please convert it.\n")}
   
-  # Delete NA trials
+  # Complete the data frame
   input_data <- na.omit(input_data)
+  for (trial in seq(1, nrow(input_data))) {
+    if (input_data[trial, 1] == 1) {input_data[trial, 3] = 1}
+    if (input_data[trial, 1] == 2) {input_data[trial, 3] = 0}
+    if (input_data[trial, 1] == 3) {input_data[trial, 3] = 0}
+    if (input_data[trial, 1] == 4) {input_data[trial, 3] = 1}}
+  colnames(input_data) <- c("Label", "Confidence", "Outcome")
+  
+  decimals <- 4
+
+  # DESCRIPTIVE ANALYSIS
+  
+  ntrials <- nrow(input_data)
+  conf_levels <- seq(min_conf, max_conf)
+  nconf <- length(conf_levels)
+  mean_conf <- mean(as.matrix(input_data[2]))
+  sd_conf <- sd(as.matrix(input_data[2]))
   
   # Display some warnings
-  ntrials <- nrow(input_data)
-  mean_conf <- sum(input_data[2]) / ntrials
   if (ntrials < 100) {
-    cat("Warning! The SDT analysis will only be made on less than 100 trials which can led to poor estimation of subject's actual metacognitive accuracy and, in some cases, to completely wrong computations.\n")}
+    cat("Warning! The SDT analysis will only be made on less than 100 trials which can led to poor estimation of subject's actual metacognitive accuracy and, in some cases, to completly wrong computations.\n")}
   
+  # CORRELATION ANALYSIS
+  
+  phi <- as.numeric(cor.test(as.matrix(input_data[2]), as.matrix(input_data[3]))[4])
+  p_cor <- as.numeric(cor.test(as.matrix(input_data[2]), as.matrix(input_data[3]))[3])
+  
+  # PROBABILITY ANALYSIS
+  
+  trials_per_conf <- table(factor(input_data$Outcome, levels = 0 : 1), factor(input_data$Confidence, levels = min_conf : max_conf))
+  proportion_correct <- trials_per_conf[2,] / table(factor(input_data$Confidence, levels = min_conf : max_conf)) # c
+  subjective_probability <- ((conf_levels * 0.5) / max_conf) + 0.5 # f
+  trials_num_per_conf <- table(factor(input_data$Confidence, levels = min_conf : max_conf))
+  
+  outcome <- (sum(proportion_correct * trials_num_per_conf) / ntrials) * (1 - (sum(proportion_correct * trials_num_per_conf) / ntrials))
+  calibration <- sum(trials_num_per_conf * ((subjective_probability - proportion_correct) ^ 2)) / ntrials
+  resolution <- sum(trials_num_per_conf * (proportion_correct - (sum(proportion_correct * trials_num_per_conf) / ntrials)) ^ 2) / ntrials
+  
+  PS <- outcome + calibration - resolution
+
+  # SIGNAL DETECTION ANALYSIS
+
   # Define the cut-off for first versus second part of trials
   cut_off <- round(ntrials/2)
   
@@ -117,7 +160,7 @@ MM_metaSDT <- function(input_data, min_conf, max_conf, design = 2, coefficient =
       fit_typeII_cor <- cor.test(qnorm(pH_cum[2 : (length(pH_cum) - 1)], 0, 1), qnorm(pFA_cum[2 : (length(pFA_cum) - 1)], 0, 1))
       fit_typeII_poly <- lm(qnorm(pH_cum[2 : (length(pH_cum) - 1)], 0, 1) ~ qnorm(pFA_cum[2 : (length(pFA_cum) - 1)], 0, 1))
       
-      #
+      # Calculate the ka and kb values
       ka <- vector()
       kb <- vector()
       for (confidence in seq((min_conf + index + 1), med_conf)) {
@@ -133,34 +176,76 @@ MM_metaSDT <- function(input_data, min_conf, max_conf, design = 2, coefficient =
         Bk <- log(((1/4) * ka) / ((1/4) * kb))}
       if (coefficient == 2) {
         Aroc <- (1 / 2) * ((med_conf / (2 * length(seq(min_conf, max_conf)))) * ka) * (((med_conf + 1) / (2 * length(seq(min_conf, max_conf)))) * kb)
-        Bk <- log(((med_conf / (2 * length(seq(min_conf, max_conf)))) * ka) / (((med_conf + 1) / (2 * length(seq(min_conf, max_conf)))) * kb))
+        Bk <- log(((med_conf / (2 * length(seq(min_conf, max_conf)))) * ka) / (((med_conf + 1) / (2 * length(seq(min_conf, max_conf)))) * kb))}
       
       # Save splitted Aroc values
       if (procedure == 1) {first_half <- Aroc}
-      if (procedure == 2) {second_half <- Aroc}}
+      if (procedure == 2) {second_half <- Aroc}
+  }
   
-  # Display the results tables
+  # FIRST PART OF THE RESULTS
+  
+  # Save the results in a matrix
   big_d_prime <- meta_d_prime / d_prime
   error <- first_half - second_half
-  summary_table <- matrix(c(ntrials, mean_conf, d_prime, c, meta_d_prime, big_d_prime, Bk, Aroc, error, fit_typeI_poly$coefficients[2], fit_typeI_poly$coefficients[1], (fit_typeI_cor[4]^2), fit_typeI_cor[3], fit_typeII_poly$coefficients[2], fit_typeII_poly$coefficients[1], (fit_typeII_cor[4]^2), fit_typeII_cor[3]), nrow = 1, ncol = 17)
-  colnames(summary_table) <- c("N", "Mean conf.", "d'", "c", "meta-d'", "D'", "Bk", "Aroc", "Error", "T1 beta0", "T1 beta1", "T1 r2", "T1 p", "T2 beta0", "T2 beta1", "T2 r2", "T2 p")
+  summary_table <- matrix(c(ntrials, mean_conf, sd_conf, phi, p_cor, outcome, calibration, resolution, PS, d_prime, c, meta_d_prime, big_d_prime, Bk, Aroc, error, as.numeric(fit_typeI_poly$coefficients[2]), as.numeric(fit_typeI_poly$coefficients[1]), as.numeric(fit_typeI_cor[4])^2, as.numeric(fit_typeI_cor[3]), as.numeric(fit_typeII_poly$coefficients[2]), as.numeric(fit_typeII_poly$coefficients[1]), as.numeric(fit_typeII_cor[4])^2, as.numeric(fit_typeII_cor[3])), nrow = 1, ncol = 24)
+  colnames(summary_table) <- c("N", "Mean conf.", "SD conf.", "phi", "p", "O", "C", "R", "PS", "d'", "c", "meta-d'", "D'", "Bk", "Aroc", "Error", "T1 beta0", "T1 beta1", "T1 r2", "T1 p", "T2 beta0", "T2 beta1", "T2 r2", "T2 p")
   rownames(summary_table) <- ""
   
-  # Create the graph window
+  # Print them
+  cat("\nDESCRIPTIVE ANALYSIS\n N =", ntrials, "\n Mean confidence =", round(mean_conf, decimals), "\n SD confidence =", round(sd_conf, decimals), "\n")
+  cat("\nCORRELATION ANALYSIS\n Phi =", round(phi, decimals), "\n p =", round(p_cor, decimals), "\n")
+  cat("\nPROBABILITIES ANALYSIS\n O =", round(outcome, decimals), "\n C =", round(calibration, decimals), "\n R =", round(resolution, decimals), "\n PS =", round(PS, decimals), "\n")
+  
+  # FIRST PLOT
+  
+  plot.new()
+  plot.window(xlim  = c(0.5, 1), ylim = c(0.5, 1), xaxs = "i", yaxs = "i")
+  grid(5, 5, col = "lightgrey", lty = 2, lwd = 0.5)
+  
+  for (i in seq(0, 0.5, by = 0.001)) {
+    segments(x0 = 0.5, y0 = (i + 0.5), x1 = (1 - i), y1 = 1, col = rgb(160/255, 32/255, 240/255, (i * 2)))
+    segments(x0 = (i + 0.5), y0 = 0.5, x1 = 1, y1 = (1 - i), col = rgb(255/255, 165/255, 0/255, (i * 2)))}
+  
+  lines(x = subjective_probability, y = proportion_correct, col = "black", lty = 1, lwd = 5)
+  lines(x = c(0.5, 1), y = c(0.5, 1), col = "black", lty = 1, lwd = 1)
+  
+  text(x = 0.725, y = 0.75, "No bias", srt = 45, col = "black")
+  text(x = 0.6, y = 0.9, "Underconfidence", srt = 45, col = "purple")
+  text(x = 0.9, y = 0.6, "Overconfidence", srt = 45, col = "orange")
+  
+  axis(1, xaxp = c(0.5, 1, 5))
+  axis(2, yaxp = c(0.5, 1, 5))
+  title(xlab = "Subjective probability", ylab = "Proportion correct", main = "Type I accuracy according to type II score")
+  box(lwd = 2)
+  
+  # Wait before displaying the next plot
+  cat ("\nPress [ENTER] to pursue the analysis.")
+  line <- readline()
+  
+  # SECOND PART OF THE RESULTS
+  
+  cat("FIRST ORDER SDT\n d' =", round(d_prime, decimals), "\n c =", round(c, decimals), "\n beta0 = ", round(as.numeric(fit_typeI_poly$coefficients[2]), decimals), "\n beta1 =", round(as.numeric(fit_typeI_poly$coefficients[1]), decimals), "\n r2 =", round(as.numeric(fit_typeI_cor[decimals])^2, decimals), "\n p =", round(as.numeric(fit_typeI_cor[3]), decimals), "\n")
+  cat("\nSECOND ORDER SDT\n meta-d' =", round(meta_d_prime, decimals), "\n D' =", round(big_d_prime, decimals), "\n beta0 =", round(fit_typeII_poly$coefficients[2], decimals), "\n beta1 =", round(as.numeric(fit_typeII_poly$coefficients[1]), decimals), "\n r2 =", round(as.numeric(fit_typeII_cor[decimals])^2, decimals), "\n p =", round(as.numeric(fit_typeII_cor[3]), decimals), "\n")
+  cat("\nROC ANALYSIS\n Bk =", round(Bk, decimals), "\n Aroc =", round(Aroc, decimals), "\n Error =", round(error, decimals), "\n")
+
+  # SECOND PLOT
+  
   plot.new()
   plot.window(xlim  = c(0, 1), ylim = c(0, 1), xaxs = "i", yaxs = "i")
   grid(10, 10, col = "lightgrey", lty = 2, lwd = 0.5)
   
   # Plot the type I ROC curve
   polygon(x = p_false_alarm, y = p_hit, col = "grey")
-  lines(x = p_false_alarm, y = p_hit, col = "black", lty = 1, lwd = 1)
+  lines(x = p_false_alarm, y = p_hit, col = "black", lty = 1, lwd = 2)
   
   # Plot the type II ROC curve
   polygon(x = pFA_cum, y = pH_cum, col = "royalblue3")
-  lines(x = pFA_cum, y = pH_cum, col = "black", lty = 1, lwd = 1)
+  lines(x = pFA_cum, y = pH_cum, col = "black", lty = 1, lwd = 2)
   
-  # Plot the diagonal
-  lines(x = c(0,1), y = c(0,1), col = "black", lty = 1, lwd = 1)
+  # Plot the diagonals
+  lines(x = c(0, 1), y = c(0, 1), col = "black", lty = 1, lwd = 1)
+  lines(x = c(0, 0.5), y = c(1, 0.5), col = "black", lty = 2, lwd = 1)
   
   # Define some other graph parameters
   axis(1, xaxp = c(0, 1, 10))
@@ -170,5 +255,5 @@ MM_metaSDT <- function(input_data, min_conf, max_conf, design = 2, coefficient =
   box(lwd = 2)
   
   # Return the results table
-  return(print(summary_table, digits = 4))
+  return(summary_table)
 }
