@@ -31,29 +31,32 @@
         <h3>
 <a name="description" class="anchor" href="#description"><span class="octicon octicon-link"></span></a>Description.</h3>
 
-<p>metaSDT is a R function analyzing your type II data with signal detection theory. It works with confidence ratings (any type of scale with 1 step between two grades) and control levels (such as information seeking level or amount of exploration).</p>
+<p>metaSDT is a R function analyzing, with signal detection theory, your type II data. It works with confidence ratings (any type of scale with 1 step between two grades) and control levels (such as information seeking level or amount of exploration).</p>
 
 <h3>
-<a name="input" class="anchor" href="#input"><span class="octicon octicon-link"></span></a>Input.</h3>
+<a name="required-inputs" class="anchor" href="#required-inputs"><span class="octicon octicon-link"></span></a>Required inputs.</h3>
 
 <p>It only requires:</p>
 
 <ul>
-<li>an "input_data" data.frame with answers labels in the first column and confidence ratings in the second one,</li>
-<li>and confidence borns.</li>
-</ul><p>It can also take into account design (detection or choice), ponderation type, and homogeneity analysis, which are specified by default.</p>
+<li>An "input_data" data frame with, at least, type I correction (1 vs. 0) in the first column and metacognitive score (confidence ratings, information seeking levels, etc.) in the second one.</li>
+<li>Confidence borns ("min_conf" and "max_conf").</li>
+</ul><h3>
+<a name="optional-inputs" class="anchor" href="#optional-inputs"><span class="octicon octicon-link"></span></a>Optional inputs.</h3>
 
-<h3>
-<a name="answers-labels" class="anchor" href="#answers-labels"><span class="octicon octicon-link"></span></a>Answers labels.</h3>
-
-<p>Answers have to be classified (answers labels) following classical SDT categories:</p>
+<p>It can also take into account:</p>
 
 <ul>
-<li>1: Hit,</li>
-<li>2: False alarm,</li>
-<li>3: Miss,</li>
-<li>4: Correct rejection.</li>
+<li>Type I signal detection analysis if (i) answers are labelled following classical SDT categories (1: hit, 2: false alarm, 3: miss, 4: correct rejection) in a third column included in the input data frame and (ii) the corresponding argument is activated ("typeI = 1").</li>
+<li>Design correction: detection ("present" vs. "absent": "design = 1") or choice ("first" vs. "second": "design = 2" by default).</li>
+<li>Ponderation type: classical Aroc computation (1/2 + 1/4*ka + 1/4*kb: "coefficient = 1") or balanced Aroc computation (with k coefficients based on the (un)balance between low and high ratings: "coefficient = 2").</li>
+<li>Output type: simply display plots and results ("output = 0"), save the results table in a variable you defined ("output = 1"), save the bias curve coordinates in a variable you defined ("output = 2") or save the ROC curve coordinates in a variable you defined ("output = 3").</li>
 </ul><h3>
+<a name="remarks" class="anchor" href="#remarks"><span class="octicon octicon-link"></span></a>Remarks.</h3>
+
+<p>This function automatically compute the Aroc in both half of the trials before analyzing them at once. The first two Aroc are compared against each other in order to get an error and so provided an homogenity analysis of the metacognitive accuracy during the experiment.</p>
+
+<h3>
 <a name="utilization" class="anchor" href="#utilization"><span class="octicon octicon-link"></span></a>Utilization.</h3>
 
 <ul>
@@ -74,7 +77,7 @@
 
 <ul>
 <li>Launch the function.</li>
-</ul><pre><code>MM_metaSDT(data, 1, 6)
+</ul><pre><code>MM_metaSDT(input_data = example_data, min_conf = 1, max_conf = 6, design = 2, typeI = 1, output = 0)
 </code></pre>
 
 <h3>
@@ -84,6 +87,7 @@
 
 <ul>
 <li>Fleming, S. M., Weil, R. S., Nagy, Z., Dolan, R. J., &amp; Rees, G. (2010). Relating introspective accuracy to individual differences in brain structure. Science, 329(5998), 1541–1543.</li>
+<li>Fleming, S. M., &amp; Lau, H. C. (2014). How to measure metacognition. Frontiers in Human Neuroscience, 8, 443.</li>
 <li>Galvin, S. J., Podd, J. V., Drga, V., &amp; Whitmore, J. (2003). Type 2 tasks in the theory of signal detectability: Discrimination between correct and incorrect decisions. Psychonomic Bulletin &amp; Review, 10(4), 843–876.</li>
 <li>Kornbrot, D. E. (2006). Signal detection theory, the approach of choice: Model-based and distribution-free measures and evaluation. Perception &amp; Psychophysics, 68(3), 393–414.</li>
 <li>Macmillan, N. A., &amp; Creelman, C. D. (2004). Detection theory: A user's guide. Psychology press.</li>
