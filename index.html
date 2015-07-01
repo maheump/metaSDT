@@ -6,7 +6,7 @@
     <title>metaSDT by maximemaheu</title>
 
     <link rel="stylesheet" href="stylesheets/styles.css">
-    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <link rel="stylesheet" href="stylesheets/github-light.css">
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
     <!--[if lt IE 9]>
     <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
@@ -29,59 +29,71 @@
       </header>
       <section>
         <h3>
-<a name="description" class="anchor" href="#description"><span class="octicon octicon-link"></span></a>Description.</h3>
+<a id="description" class="anchor" href="#description" aria-hidden="true"><span class="octicon octicon-link"></span></a>Description.</h3>
 
 <p>metaSDT is a R function analyzing, with signal detection theory, your type II data. It works with confidence ratings (any type of scale with 1 step between two grades) and control levels (such as information seeking level or amount of exploration).</p>
 
 <h3>
-<a name="required-inputs" class="anchor" href="#required-inputs"><span class="octicon octicon-link"></span></a>Required inputs.</h3>
+<a id="required-inputs" class="anchor" href="#required-inputs" aria-hidden="true"><span class="octicon octicon-link"></span></a>Required inputs.</h3>
 
 <p>It only requires:</p>
 
 <ul>
 <li>An "input_data" data frame with, at least, type I correction (1 vs. 0) in the first column and metacognitive score (confidence ratings, information seeking levels, etc.) in the second one.</li>
 <li>Confidence borns ("min_conf" and "max_conf").</li>
-</ul><h3>
-<a name="optional-inputs" class="anchor" href="#optional-inputs"><span class="octicon octicon-link"></span></a>Optional inputs.</h3>
+</ul>
+
+<h3>
+<a id="optional-inputs" class="anchor" href="#optional-inputs" aria-hidden="true"><span class="octicon octicon-link"></span></a>Optional inputs.</h3>
 
 <p>It can also take into account:</p>
 
 <ul>
 <li>Type I signal detection analysis if (i) answers are labelled following classical SDT categories (1: hit, 2: false alarm, 3: miss, 4: correct rejection) in a third column included in the input data frame and (ii) the corresponding argument is activated ("typeI = 1").</li>
 <li>Design correction: detection ("present" vs. "absent": "design = 1") or choice ("first" vs. "second": "design = 2" by default).</li>
-<li>Ponderation type: classical Aroc computation (1/2 + 1/4*ka + 1/4*kb: "coefficient = 1") or balanced Aroc computation (with k coefficients based on the (un)balance between low and high ratings: "coefficient = 2").</li>
+<li>Ponderation type: classical Aroc computation (1/2 + 1/4<em>ka + 1/4</em>kb: "coefficient = 1") or balanced Aroc computation (with k coefficients based on the (un)balance between low and high ratings: "coefficient = 2").</li>
 <li>Output type: simply display plots and results ("output = 0"), save the results table in a variable you defined ("output = 1"), save the bias curve coordinates in a variable you defined ("output = 2") or save the ROC curve coordinates in a variable you defined ("output = 3").</li>
-</ul><h3>
-<a name="remarks" class="anchor" href="#remarks"><span class="octicon octicon-link"></span></a>Remarks.</h3>
+</ul>
+
+<h3>
+<a id="remarks" class="anchor" href="#remarks" aria-hidden="true"><span class="octicon octicon-link"></span></a>Remarks.</h3>
 
 <p>This function automatically compute the Aroc in both half of the trials before analyzing them at once. The first two Aroc are compared against each other in order to get an error and so provided an homogenity analysis of the metacognitive accuracy during the experiment.</p>
 
 <h3>
-<a name="utilization" class="anchor" href="#utilization"><span class="octicon octicon-link"></span></a>Utilization.</h3>
+<a id="utilization" class="anchor" href="#utilization" aria-hidden="true"><span class="octicon octicon-link"></span></a>Utilization.</h3>
 
 <ul>
 <li>Open R.</li>
 <li>Set the working directory to the right place.</li>
-</ul><pre><code>setwd("~/Documents/R/metaSDT")
+</ul>
+
+<pre><code>setwd("~/Documents/R/metaSDT")
 </code></pre>
 
 <ul>
 <li>Load the function.</li>
-</ul><pre><code>source("MM_metaSDT.r")
+</ul>
+
+<pre><code>source("MM_metaSDT.r")
 </code></pre>
 
 <ul>
 <li>Load the example data.</li>
-</ul><pre><code>data &lt;- read.csv("example_data.csv", header = TRUE, sep = ";")
+</ul>
+
+<pre><code>example_data &lt;- read.csv("example_data.csv", header = TRUE, sep = ";")
 </code></pre>
 
 <ul>
 <li>Launch the function.</li>
-</ul><pre><code>MM_metaSDT(input_data = example_data, min_conf = 1, max_conf = 6, design = 2, typeI = 1, output = 0)
+</ul>
+
+<pre><code>MM_metaSDT(input_data = example_data, min_conf = 1, max_conf = 6, design = 2, typeI = 1, output = 0)
 </code></pre>
 
 <h3>
-<a name="references" class="anchor" href="#references"><span class="octicon octicon-link"></span></a>References.</h3>
+<a id="references" class="anchor" href="#references" aria-hidden="true"><span class="octicon octicon-link"></span></a>References.</h3>
 
 <p>Here are some usefull references to undestand what is going on here :</p>
 
