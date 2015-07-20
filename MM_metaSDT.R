@@ -5,7 +5,7 @@
   # setwd("~/Documents/R/metaSDT")
   # source("MM_metaSDT.r")
   # example_data <- read.csv("example_data.csv", header = TRUE, sep = ";")
-  # results <- MM_metaSDT(input_data = example_data, min_conf = 1, max_conf = 6, design = 2, coefficient = 1, typeI = 1, output = 0)
+  # results <- MM_metaSDT(input_data = data, min_conf = 1, max_conf = 6, design = 2, coefficient = 1, typeI = 1, output = 0)
   # results
 
 MM_metaSDT <- function(input_data, min_conf, max_conf, design = 2, coefficient = 1, typeI = 0, output = 0) {
